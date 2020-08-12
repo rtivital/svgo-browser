@@ -44,8 +44,7 @@
   },
   "scripts": {
     "test": "set NODE_ENV=test && mocha",
-    "lint": "jshint --show-non-errors .",
-    "jshint": "npm run lint"
+    "lint": "eslint lib"
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -56,7 +55,6 @@
     "csso": "^4.0.2",
     "js-yaml": "^3.13.1",
     "mkdirp": "~0.5.1",
-    "object.values": "^1.1.0",
     "sax": "~1.2.4",
     "stable": "^0.1.8",
     "unquote": "~1.1.1",
@@ -64,9 +62,11 @@
   },
   "devDependencies": {
     "coveralls": "^3.0.7",
+    "eslint": "^7.6.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "fs-extra": "~8.1.0",
     "istanbul": "~0.4.5",
-    "jshint": "~2.10.2",
     "mocha": "~6.2.2",
     "mocha-istanbul": "~0.3.0",
     "mock-stdin": "~0.3.1",
