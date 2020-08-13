@@ -46,7 +46,7 @@ optimize(testData).then(console.log); // -> <svg viewBox="0 0 10 20">test</svg>
 import getSvgoInstance from 'svgo-browser/lib/get-svgo-instance';
 
 const svgo = getSvgoInstance();
-svgo.optimize(testData).then(console.log); // -> <svg viewBox="0 0 10 20">test</svg>
+svgo.optimize(testData).then(console.log); // -> { data: "<svg viewBox="0 0 10 20">test</svg>", info: {}}
 ```
 
 **Provide plugins to svgo instance:**
