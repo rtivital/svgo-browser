@@ -1,5 +1,3 @@
-'use strict';
-
 exports.type = 'perItem';
 
 exports.active = true;
@@ -18,10 +16,8 @@ exports.description = 'removes comments';
  *
  * @author Kir Belevich
  */
-exports.fn = function(item) {
-
-    if (item.comment && item.comment.charAt(0) !== '!') {
-        return false;
-    }
-
+exports.fn = function (item) {
+  if (item.comment && item.comment.charAt(0) !== '!') {
+    return false;
+  }
 };

@@ -1,5 +1,3 @@
-'use strict';
-
 exports.type = 'perItem';
 
 exports.active = true;
@@ -7,16 +5,16 @@ exports.active = true;
 exports.description = 'merges multiple paths in one if possible';
 
 exports.params = {
-    collapseRepeated: true,
-    force: false,
-    leadingZero: true,
-    negativeExtraSpace: true,
-    noSpaceAfterFlags: true
+  collapseRepeated: true,
+  force: false,
+  leadingZero: true,
+  negativeExtraSpace: true,
+  noSpaceAfterFlags: true,
 };
 
-var path2js = require('./_path.js').path2js,
-    js2path = require('./_path.js').js2path,
-    intersects = require('./_path.js').intersects;
+const { path2js } = require('./_path.js');
+const { js2path } = require('./_path.js');
+const { intersects } = require('./_path.js');
 
 /**
  * Merge multiple Paths into one.
@@ -26,48 +24,44 @@ var path2js = require('./_path.js').path2js,
  *
  * @author Kir Belevich, Lev Solntsev
  */
-exports.fn = function(item, params) {
+exports.fn = function (item, params) {
+  if (!item.isElem() || item.isEmpty()) return;
 
-    if (!item.isElem() || item.isEmpty()) return;
+  let prevContentItem = null;
+  let prevContentItemKeys = null;
 
-    var prevContentItem = null,
-        prevContentItemKeys = null;
+  item.content = item.content.filter((contentItem) => {
+    if (
+      prevContentItem
+      && prevContentItem.isElem('path')
+      && prevContentItem.isEmpty()
+      && prevContentItem.hasAttr('d')
+      && contentItem.isElem('path')
+      && contentItem.isEmpty()
+      && contentItem.hasAttr('d')
+    ) {
+      if (!prevContentItemKeys) {
+        prevContentItemKeys = Object.keys(prevContentItem.attrs);
+      }
 
-    item.content = item.content.filter(function(contentItem) {
+      const contentItemAttrs = Object.keys(contentItem.attrs);
+      const equalData = prevContentItemKeys.length == contentItemAttrs.length
+          && contentItemAttrs.every((key) => (
+            key == 'd'
+              || (prevContentItem.hasAttr(key)
+                && prevContentItem.attr(key).value == contentItem.attr(key).value)
+          ));
+      const prevPathJS = path2js(prevContentItem);
+      const curPathJS = path2js(contentItem);
 
-        if (prevContentItem &&
-            prevContentItem.isElem('path') &&
-            prevContentItem.isEmpty() &&
-            prevContentItem.hasAttr('d') &&
-            contentItem.isElem('path') &&
-            contentItem.isEmpty() &&
-            contentItem.hasAttr('d')
-        ) {
+      if (equalData && (params.force || !intersects(prevPathJS, curPathJS))) {
+        js2path(prevContentItem, prevPathJS.concat(curPathJS), params);
+        return false;
+      }
+    }
 
-            if (!prevContentItemKeys) {
-                prevContentItemKeys = Object.keys(prevContentItem.attrs);
-            }
-
-            var contentItemAttrs = Object.keys(contentItem.attrs),
-                equalData = prevContentItemKeys.length == contentItemAttrs.length &&
-                    contentItemAttrs.every(function(key) {
-                        return key == 'd' ||
-                            prevContentItem.hasAttr(key) &&
-                            prevContentItem.attr(key).value == contentItem.attr(key).value;
-                    }),
-                prevPathJS = path2js(prevContentItem),
-                curPathJS = path2js(contentItem);
-
-            if (equalData && (params.force || !intersects(prevPathJS, curPathJS))) {
-                js2path(prevContentItem, prevPathJS.concat(curPathJS), params);
-                return false;
-            }
-        }
-
-        prevContentItem = contentItem;
-        prevContentItemKeys = null;
-        return true;
-
-    });
-
+    prevContentItem = contentItem;
+    prevContentItemKeys = null;
+    return true;
+  });
 };
