@@ -35,7 +35,7 @@ const testData = `
 **Optimize with all default configuration:**
 
 ```js
-import optimize from 'svgo-browser/lib/// OPTIMIZE: ';
+import optimize from 'svgo-browser/lib/optimize';
 
 optimize(testData).then(console.log); // -> <svg viewBox="0 0 10 20">test</svg>
 ```
